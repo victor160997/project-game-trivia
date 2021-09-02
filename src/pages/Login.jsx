@@ -24,17 +24,6 @@ export class Login extends Component {
     }
   }
 
-  // validUser() {
-  //   const { name } = this.state;
-  //   const emailCheck = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/i;
-  //   const email = document.getElementById('email');
-  //   const QUATRO = 4;
-  //   if (emailCheck.test(email.value) && name.length > QUATRO) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   render() {
     const { email, name, disable } = this.state;
     return (
