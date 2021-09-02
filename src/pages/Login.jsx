@@ -24,6 +24,13 @@ export class Login extends Component {
     }
   }
 
+  async requestToken() {
+    const urlRequestToken = 'https://opentdb.com/api_token.php?command=request';
+    const data = await fetch(urlRequestToken);
+    const response = await data.json();
+    localStorage.setItem('token', JSON.stringify(response.token));
+  }
+
   render() {
     const { email, name, disable } = this.state;
     return (
@@ -54,6 +61,7 @@ export class Login extends Component {
             data-testid="btn-play"
             disabled={ disable }
             type="button"
+            onClick={ this.requestToken }
           >
             Jogar
           </button>
