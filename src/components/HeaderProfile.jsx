@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 class HeaderProfile extends Component {
   render() {
+    // oiu
     const { nome, gravatarImage } = this.props;
     return (
       <header>
