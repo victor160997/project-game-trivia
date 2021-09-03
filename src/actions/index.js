@@ -1,8 +1,8 @@
-const USER_EMAIL = 'USER_EMAIL';
+const USER_INFO = 'USER_INFO';
 
-const userEmail = (payload) => ({
-  type: USER_EMAIL,
+const userInfo = (payload) => ({
+  type: USER_INFO,
   payload,
 });
 
-export default userEmail;
+export default userInfo;
