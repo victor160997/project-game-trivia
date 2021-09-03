@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import md5 from 'crypto-js/md5';
 import userInfo from '../actions';
+import Header from '../components/Header';
 
 class Login extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class Login extends Component {
     const { email, name, disable } = this.state;
     return (
       <div>
+        <Header />
         <form>
           <label htmlFor="name">
             <input
