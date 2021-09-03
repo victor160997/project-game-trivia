@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import md5 from 'crypto-js/md5';
+import userInfo from '../actions';
 
-export class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: '',
       name: '',
+      // token: '',
       disable: true,
     };
     this.handleChange = this.handleChange.bind(this);
+    this.requestToken = this.requestToken.bind(this);
   }
 
   handleChange({ target }) {
@@ -26,10 +32,16 @@ export class Login extends Component {
   }
 
   async requestToken() {
+    const { userInfoProps } = this.props;
     const urlRequestToken = 'https://opentdb.com/api_token.php?command=request';
     const data = await fetch(urlRequestToken);
     const response = await data.json();
     localStorage.setItem('token', JSON.stringify(response.token));
+    // this.setState({ token: response});
+    const { email, name } = this.state;
+    const hash = md5(email).toString();
+    const gravatarImage = `https://www.gravatar.com/avatar/${hash}`;
+    userInfoProps({ email, name, gravatarImage });
   }
 
   render() {
@@ -58,14 +70,16 @@ export class Login extends Component {
               onChange={ this.handleChange }
             />
           </label>
-          <button
-            data-testid="btn-play"
-            disabled={ disable }
-            type="button"
-            onClick={ this.requestToken }
-          >
-            Jogar
-          </button>
+          <Link to="/headerprofile">
+            <button
+              data-testid="btn-play"
+              disabled={ disable }
+              type="button"
+              onClick={ this.requestToken }
+            >
+              Jogar
+            </button>
+          </Link>
           <Link to="/settings">
             <button
               data-testid="btn-settings"
@@ -80,4 +94,12 @@ export class Login extends Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  userInfoProps: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  userInfoProps: (payload) => dispatch(userInfo(payload)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
