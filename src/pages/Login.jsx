@@ -12,7 +12,6 @@ class Login extends Component {
     this.state = {
       email: '',
       name: '',
-      // token: '',
       disable: true,
     };
     this.handleChange = this.handleChange.bind(this);
@@ -38,11 +37,10 @@ class Login extends Component {
     const data = await fetch(urlRequestToken);
     const response = await data.json();
     localStorage.setItem('token', JSON.stringify(response.token));
-    // this.setState({ token: response});
     const { email, name } = this.state;
     const hash = md5(email).toString();
     const gravatarImage = `https://www.gravatar.com/avatar/${hash}`;
-    userInfoProps({ email, name, gravatarImage });
+    userInfoProps({ email, name, gravatarImage, token: response.token });
   }
 
   render() {
@@ -72,7 +70,7 @@ class Login extends Component {
               onChange={ this.handleChange }
             />
           </label>
-          <Link to="/headerprofile">
+          <Link to="/game">
             <button
               data-testid="btn-play"
               disabled={ disable }
