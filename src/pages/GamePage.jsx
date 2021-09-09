@@ -106,7 +106,7 @@ class GamePage extends Component {
     document.querySelector('.correct-answer').className = 'correct';
     this.setState({ showNext: true });
     this.calculaPontos(e);
-  }
+  } // c
 
   showQuestions() {
     const { questions, timer } = this.state;
