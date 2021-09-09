@@ -8,12 +8,11 @@ class Stopwatch extends Component {
     this.state = {
       timer: 30,
     };
-
-    this.delayer = this.delayer.bind(this);
   }
 
   componentDidMount() {
-    this.delayer();
+    const { delayer } = this.props;
+    delayer();
   }
 
   shouldComponentUpdate(_, nextState) {
@@ -32,19 +31,19 @@ class Stopwatch extends Component {
     clearInterval(this.interval);
   }
 
-  delayer() {
-    const timerValue = 1000;
-    this.interval = setInterval(() => {
-      this.setState((prevState) => ({
-        timer: prevState.timer - 1,
-      }));
-    }, timerValue);
-  }
+  // delayer() {
+  //   const timerValue = 1000;
+  //   this.interval = setInterval(() => {
+  //     this.setState((prevState) => ({
+  //       timer: prevState.timer - 1,
+  //     }));
+  //   }, timerValue);
+  // }
 
   render() {
-    const { timer } = this.state;
+    const { timer } = this.props;
     return (
-      <div>
+      <div id="timer">
         <p>{ timer }</p>
       </div>
     );
@@ -53,6 +52,8 @@ class Stopwatch extends Component {
 
 Stopwatch.propTypes = {
   contador: PropTypes.func.isRequired,
+  timer: PropTypes.string.isRequired,
+  delayer: PropTypes.func.isRequired,
 };
 
 export default Stopwatch;

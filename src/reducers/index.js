@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
 import user from './user';
+import placar from './placar';
 
 const rootReducer = combineReducers({
-  user,
+  user, placar,
 });
 
 export default rootReducer;
