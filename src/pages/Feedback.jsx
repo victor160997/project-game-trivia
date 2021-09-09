@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import HeaderFeedback from '../components/HeaderFeedback';
 // import HeaderFeedback from '../components/HeaderFeedback';
 
@@ -14,13 +15,21 @@ class Feedback extends Component {
   // }
 
   render() {
-    const { placar } = this.props;
+    const { placar, score } = this.props;
     const dois = 2;
     return (
       <div>
         <HeaderFeedback />
         { placar <= dois ? <p data-testid="feedback-text">Podia ser melhor...</p>
           : <p data-testid="feedback-text">Mandou bem!</p> }
+        <p data-testid="feedback-total-score">{ score }</p>
+        <p data-testid="feedback-total-question">{ placar }</p>
+        <Link
+          to="/"
+          data-testid="btn-play-again"
+        >
+          Jogar novamente
+        </Link>
       </div>
     );
   }
@@ -30,10 +39,12 @@ class Feedback extends Component {
 
 Feedback.propTypes = {
   placar: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   placar: state.placar.assertions,
+  score: state.placar.placar,
 });
 
 export default connect(mapStateToProps)(Feedback);
