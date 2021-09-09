@@ -88,12 +88,9 @@ class GamePage extends Component {
   }
 
   calculaPontos(e) {
-    const { questions } = this.state;
+    const { questions, index } = this.state;
     const timeSeconds = document.getElementById('timer').firstChild.innerText;
-    const questionValue = document.querySelector('.correct')
-      .parentElement.firstChild.nextSibling.innerText;
-    const dificuldade = questions.find((q) => q.question === questionValue);
-    const dificuldadeValue = this.getDificult(dificuldade.difficulty);
+    const dificuldadeValue = this.getDificult(questions[index].difficulty);
     let points = 0;
     let assertions = 0;
     if (e.target.value === document.querySelector('.correct').value) {
