@@ -6,17 +6,26 @@ import HeaderFeedback from '../components/HeaderFeedback';
 // import HeaderFeedback from '../components/HeaderFeedback';
 
 class Feedback extends Component {
-  // renderFeedback(placar) {
-  //   const tres = 3;
-  //   if (Number(placar) < tres) {
-  //     return <p>Podia ser melhor...</p>;
-  //   }
-  //   return <p>Mandou bem!</p>;
-  // }
+  componentDidMount() {
+    this.saveUserInRanking();
+  }
+
+  saveUserInRanking() {
+    const { placar, userName, profileImage } = this.props;
+    const localStorageRanking = JSON.parse(localStorage.getItem('ranking'));
+    const userInfos = {
+      name: userName,
+      score: placar,
+      picture: profileImage,
+    };
+    const ranking = [...localStorageRanking, userInfos];
+    localStorage.setItem('ranking', JSON.stringify(ranking));
+  }
 
   render() {
     const { placar, score } = this.props;
     const dois = 2;
+    if (localStorage.getItem('ranking') === null) localStorage.setItem('ranking', '[]');
     return (
       <div>
         <HeaderFeedback />
@@ -47,11 +56,15 @@ class Feedback extends Component {
 Feedback.propTypes = {
   placar: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
+  userName: PropTypes.string.isRequired,
+  profileImage: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   placar: state.placar.assertions,
   score: state.placar.placar,
+  userName: state.user.userInfo.name,
+  profileImage: state.user.userInfo.gravatarImage,
 });
 
 export default connect(mapStateToProps)(Feedback);
