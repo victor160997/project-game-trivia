@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { getPoints } from '../actions';
+import { getPoints, getAssertions } from '../actions';
 import HeaderProfile from '../components/HeaderProfile';
 import './questions.css';
 import Stopwatch from './Stopwatch';
@@ -73,7 +73,7 @@ class GamePage extends Component {
   }
 
   enviaInfoPoints(points, assertions) {
-    const { placarAtual, user, enviaPlacar } = this.props;
+    const { placarAtual, user, enviaPlacar, submitAssertions } = this.props;
     const player = {
       player: {
         name: user.name,
@@ -83,16 +83,14 @@ class GamePage extends Component {
       },
     };
     localStorage.setItem('state', JSON.stringify(player));
+    submitAssertions(assertions);
     return enviaPlacar(placarAtual + points);
   }
 
   calculaPontos(e) {
-    const { questions } = this.state;
+    const { questions, index } = this.state;
     const timeSeconds = document.getElementById('timer').firstChild.innerText;
-    const questionValue = document.querySelector('.correct')
-      .parentElement.firstChild.nextSibling.innerText;
-    const dificuldade = questions.find((q) => q.question === questionValue);
-    const dificuldadeValue = this.getDificult(dificuldade.difficulty);
+    const dificuldadeValue = this.getDificult(questions[index].difficulty);
     let points = 0;
     let assertions = 0;
     if (e.target.value === document.querySelector('.correct').value) {
@@ -208,12 +206,14 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   enviaPlacar: (payload) => dispatch(getPoints(payload)),
+  submitAssertions: (assertions) => dispatch(getAssertions(assertions)),
 });
 
 GamePage.propTypes = {
   enviaPlacar: PropTypes.func.isRequired,
   placarAtual: PropTypes.number.isRequired,
   user: PropTypes.objectOf(PropTypes.string).isRequired,
+  submitAssertions: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
