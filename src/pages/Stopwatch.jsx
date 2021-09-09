@@ -43,7 +43,7 @@ class Stopwatch extends Component {
   render() {
     const { timer } = this.props;
     return (
-      <div>
+      <div id="timer">
         <p>{ timer }</p>
       </div>
     );

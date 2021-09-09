@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-// import PropTypes from 'prop-types';
+import { getPoints } from '../actions';
 import HeaderProfile from '../components/HeaderProfile';
 import './questions.css';
 import Stopwatch from './Stopwatch';
@@ -23,17 +24,41 @@ class GamePage extends Component {
     this.requestQuestions = this.requestQuestions.bind(this);
     this.trueOrFalse = this.trueOrFalse.bind(this);
     this.handleTimer = this.handleTimer.bind(this);
+    this.getDificult = this.getDificult.bind(this);
+    this.calculaPontos = this.calculaPontos.bind(this);
     this.delayer = this.delayer.bind(this);
+    this.enviaInfoPoints = this.enviaInfoPoints.bind(this);
   }
 
   componentDidMount() {
     this.requestQuestions();
+    const { user } = this.props;
+    const player = {
+      player: {
+        name: user.name,
+        assertions: 0,
+        score: 0,
+        gravatarEmail: user.email,
+      },
+    };
+    localStorage.setItem('state', JSON.stringify(player));
   }
 
   shouldComponentUpdate(_, nextState) {
     const { timer } = this.state;
     nextState = 0;
     return (timer > nextState);
+  }
+
+  getDificult(dft) {
+    if (dft === 'hard') {
+      const hard = 3;
+      return hard;
+    } if (dft === 'medium') {
+      const medium = 2;
+      return medium;
+    }
+    return 1;
   }
 
   saveQuestionsInTheState(object) {
@@ -47,14 +72,49 @@ class GamePage extends Component {
     this.setState({ timer: count });
   }
 
-  trueOrFalse() {
+  enviaInfoPoints(points, assertions) {
+    const { placarAtual, user, enviaPlacar } = this.props;
+    const player = {
+      player: {
+        name: user.name,
+        assertions,
+        score: JSON.parse(localStorage.getItem('state')).player.score + points,
+        gravatarEmail: user.email,
+      },
+    };
+    localStorage.setItem('state', JSON.stringify(player));
+    return enviaPlacar(placarAtual + points);
+  }
+
+  calculaPontos(e) {
+    const { questions } = this.state;
+    const timeSeconds = document.getElementById('timer').firstChild.innerText;
+    const questionValue = document.querySelector('.correct')
+      .parentElement.firstChild.nextSibling.innerText;
+    const dificuldade = questions.find((q) => q.question === questionValue);
+    const dificuldadeValue = this.getDificult(dificuldade.difficulty);
+    let points = 0;
+    let assertions = 0;
+    if (e.target.value === document.querySelector('.correct').value) {
+      const DEZ = 10;
+      points = DEZ + (timeSeconds * dificuldadeValue);
+      assertions = JSON.parse(localStorage.getItem('state')).player.assertions + 1;
+    } else {
+      points = 0;
+      assertions = JSON.parse(localStorage.getItem('state')).player.assertions;
+    }
+    return this.enviaInfoPoints(points, assertions);
+  }
+
+  trueOrFalse(e) {
     document.querySelectorAll('.wrong-answer')
       .forEach((value) => {
         value.className = 'wrong';
       });
     document.querySelector('.correct-answer').className = 'correct';
     this.setState({ showNext: true });
-  }
+    this.calculaPontos(e);
+  } // c
 
   showQuestions() {
     const { questions, timer } = this.state;
@@ -142,10 +202,18 @@ class GamePage extends Component {
 
 const mapStateToProps = (state) => ({
   token: state.user.userInfo.token,
+  placarAtual: state.placar.placar,
+  user: state.user.userInfo,
 });
 
-// GamePage.propTypes = {
-//   token: PropTypes.string.isRequired,
-// };
+const mapDispatchToProps = (dispatch) => ({
+  enviaPlacar: (payload) => dispatch(getPoints(payload)),
+});
 
-export default connect(mapStateToProps)(GamePage);
+GamePage.propTypes = {
+  enviaPlacar: PropTypes.func.isRequired,
+  placarAtual: PropTypes.number.isRequired,
+  user: PropTypes.objectOf(PropTypes.string).isRequired,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
