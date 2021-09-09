@@ -27,6 +27,7 @@ class GamePage extends Component {
     this.getDificult = this.getDificult.bind(this);
     this.calculaPontos = this.calculaPontos.bind(this);
     this.delayer = this.delayer.bind(this);
+    this.enviaInfoPoints = this.enviaInfoPoints.bind(this);
   }
 
   componentDidMount() {
@@ -71,8 +72,21 @@ class GamePage extends Component {
     this.setState({ timer: count });
   }
 
+  enviaInfoPoints(points, assertions) {
+    const { placarAtual, user, enviaPlacar } = this.props;
+    const player = {
+      player: {
+        name: user.name,
+        assertions,
+        score: JSON.parse(localStorage.getItem('state')).player.score + points,
+        gravatarEmail: user.email,
+      },
+    };
+    localStorage.setItem('state', JSON.stringify(player));
+    return enviaPlacar(placarAtual + points);
+  }
+
   calculaPontos(e) {
-    const { enviaPlacar, placarAtual, user } = this.props;
     const { questions } = this.state;
     const timeSeconds = document.getElementById('timer').firstChild.innerText;
     const questionValue = document.querySelector('.correct')
@@ -80,22 +94,16 @@ class GamePage extends Component {
     const dificuldade = questions.find((q) => q.question === questionValue);
     const dificuldadeValue = this.getDificult(dificuldade.difficulty);
     let points = 0;
+    let assertions = 0;
     if (e.target.value === document.querySelector('.correct').value) {
       const DEZ = 10;
       points = DEZ + (timeSeconds * dificuldadeValue);
+      assertions = JSON.parse(localStorage.getItem('state')).player.assertions + 1;
     } else {
       points = 0;
+      assertions = JSON.parse(localStorage.getItem('state')).player.assertions;
     }
-    const player = {
-      player: {
-        name: user.name,
-        assertions: JSON.parse(localStorage.getItem('state')).player.assertions + 1,
-        score: JSON.parse(localStorage.getItem('state')).player.score + points,
-        gravatarEmail: user.email,
-      },
-    };
-    localStorage.setItem('state', JSON.stringify(player));
-    return enviaPlacar(placarAtual + points);
+    return this.enviaInfoPoints(points, assertions);
   }
 
   trueOrFalse(e) {
