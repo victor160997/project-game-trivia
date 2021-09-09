@@ -60,6 +60,12 @@ class GamePage extends Component {
     return 1;
   }
 
+  shouldComponentUpdate(_, nextState) {
+    const { timer } = this.state;
+    nextState = 0;
+    return (timer > nextState);
+  }
+
   saveQuestionsInTheState(object) {
     this.setState({
       questions: object,
