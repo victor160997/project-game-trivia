@@ -1,1 +1,2 @@
-Projeto Jogo de Trivia
+* Tecnologias utilizadas: HTML, CSS, JavaScript, ReactJs, Redux.
+* Resumo: essa aplicação consiste em um jogo de perguntas e respostas no qual é gerado um token para cada jogador. Os pontos de cada resposta certa são contabilizados e ao final do jogo o resultado do jogador é guardado no localStorage juntamente com o seu login. Na aplicação também existe uma página com o ranking de todos os jogadores. As informações do ranking são retiradas do localStorage.
